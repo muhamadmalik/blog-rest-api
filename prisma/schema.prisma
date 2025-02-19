@@ -28,6 +28,7 @@ model Article {
   authorId Int 
   comments Comment[]
   createdAt DateTime  @default(now())
+  tags Tag[] @relation("articleTags")
 }
 
 model Comment {
@@ -38,4 +39,10 @@ model Comment {
   article Article @relation( fields: [articleId], references: [id], onDelete: Cascade )
   createdAt DateTime  @default(now())
   articleId Int
+}
+
+model Tag {
+  id Int @id @unique @default(autoincrement())
+  name String
+  articles Article[] @relation("articleTags")
 }
