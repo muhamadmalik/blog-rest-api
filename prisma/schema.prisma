@@ -23,18 +23,19 @@ model Author {
 model Article {
   id Int @id @unique @default(autoincrement())
   title String
+  text String
   author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  authorId Int @unique
+  authorId Int 
   comments Comment[]
   createdAt DateTime  @default(now())
 }
 
 model Comment {
-  id Int @id @unique
+  id Int @id @unique @default(autoincrement())
   text String 
   author Author @relation( fields: [authorId], references: [id], onDelete: Cascade )
   authorId Int @unique
-  article Article @relation( fields: [postId], references: [id], onDelete: Cascade )
+  article Article @relation( fields: [articleId], references: [id], onDelete: Cascade )
   createdAt DateTime  @default(now())
-  postId Int
+  articleId Int
 }

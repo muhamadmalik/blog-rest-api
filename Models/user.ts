@@ -58,3 +58,12 @@ export const deleteArticle = async (id) => {
   return db.article.delete({ where: { id } });
 };
 
+export const createComment = async (comment: Comment) => {
+  return db.comment.create({
+    data: {
+      text: comment.text,
+      authorId: comment.authorId,
+      articleId: comment.postId,
+    },
+  });
+};
