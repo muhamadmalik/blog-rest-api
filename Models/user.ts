@@ -13,6 +13,7 @@ export type Article = {
   title: string;
   authorId: number;
   author: Author;
+  text: string;
   comments: Comment[];
   createdAt: Date;
 };
@@ -37,12 +38,19 @@ export const createAuthor = async (author: Author) => {
 };
 
 export const getAuthor = async (id) => {
-  return db.author.findUnique({ where: { id } });
+  return db.author.findUnique({
+    where: { id },
+    include: { articles: { include: { comments: true } } },
+  });
 };
 
 export const createArticle = async (post: Article) => {
   return db.article.create({
-    data: { title: post.title, author: { connect: { id: post.authorId } } },
+    data: {
+      title: post.title,
+      text: post.text,
+      author: { connect: { id: post.authorId } },
+    },
   });
 };
 
@@ -66,4 +74,8 @@ export const createComment = async (comment: Comment) => {
       articleId: comment.postId,
     },
   });
+};
+
+export const getComments = async () => {
+  return db.comment.findMany();
 };
