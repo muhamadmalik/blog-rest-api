@@ -12,18 +12,18 @@ datasource db {
   provider = "postgresql"
   url      = env("DATABASE_URL")
 }
-model User {
+model Author {
   id Int @id @unique @default(autoincrement())
   username String @unique
   password String @unique 
-  comments Comment[]
+  comments Comment[] @relation()
   articles Article[]
   createdAt DateTime @default(now())
 }
 model Article {
   id Int @id @unique @default(autoincrement())
   title String
-  author User @relation(fields: [authorId], references: [id])
+  author Author @relation(fields: [authorId], references: [id], onDelete: Cascade)
   authorId Int @unique
   comments Comment[]
   createdAt DateTime  @default(now())
@@ -32,9 +32,9 @@ model Article {
 model Comment {
   id Int @id @unique
   text String 
-  author User @relation(fields: [authorId], references: [id])
+  author Author @relation( fields: [authorId], references: [id], onDelete: Cascade )
   authorId Int @unique
-  post Article @relation(fields: [postId], references: [id])
+  article Article @relation( fields: [postId], references: [id], onDelete: Cascade )
   createdAt DateTime  @default(now())
   postId Int
 }
