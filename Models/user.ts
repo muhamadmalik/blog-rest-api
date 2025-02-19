@@ -55,7 +55,7 @@ export const createArticle = async (post: Article) => {
 };
 
 export const getArticles = async () => {
-  return db.article.findMany();
+  return db.article.findMany({ include: { comments: true } });
 };
 
 export const getUserArticles = async (id) => {
