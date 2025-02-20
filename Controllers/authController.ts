@@ -4,6 +4,7 @@ import { generateToken } from '../authentication/passport';
 import {Request, Response} from 'express'
 
 export const register = async (req: Request, res: Response) => {
+    console.log(req.body)
   const { username, password } = req.body;
   try {
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -29,3 +30,4 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+ 

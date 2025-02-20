@@ -20,3 +20,7 @@ export const getAuthor = async (username) => {
     where: { username },
   });
 };
+
+export const getAuthors = async () => {
+  return db.author.findMany();
+};
