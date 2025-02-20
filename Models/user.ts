@@ -2,14 +2,9 @@ import db from './db';
 import { Article } from '@prisma/client';
 
 export type Author = {
-  id: number;
   username: string;
   password: string;
-  comments: Comment[];
-  articles: Article[];
-  createdAt: Date;
 };
-
 
 export const createAuthor = async (author: Author) => {
   return await db.author.create({
@@ -20,10 +15,8 @@ export const createAuthor = async (author: Author) => {
   });
 };
 
-export const getAuthor = async (id) => {
+export const getAuthor = async (username) => {
   return db.author.findUnique({
-    where: { id },
-    include: { articles: { include: { comments: true } } },
+    where: { username },
   });
 };
-
