@@ -42,6 +42,10 @@ export const getArticles = async () => {
   return db.article.findMany({ include: { comments: true } });
 };
 
+export const getArticle = async (id) => {
+  return db.article.findUnique({ where: { id }, include: {comments: true} });
+};
+
 export const getLatestArticles = async () => {
   return db.article.findMany({ orderBy: { createdAt: 'desc' }, take: 10 });
 };
