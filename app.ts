@@ -5,9 +5,10 @@ import tagRouter from './Routes/tagRouter';
 
 const app = express();
 
-app.use('/api/all/', indexRouter);
+app.use('/api/articles/', indexRouter);
 app.use('/api/tags/', tagRouter);
 app.use('/api/about/', aboutRouter);
+
 app.set('json spaces', 2);
 
 

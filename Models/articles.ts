@@ -42,8 +42,25 @@ export const getArticles = async () => {
   return db.article.findMany({ include: { comments: true } });
 };
 
-export const getUserArticles = async (id) => {
-  return db.article.findMany({ where: { authorId: id } });
+export const getLatestArticles = async () => {
+  return db.article.findMany({ orderBy: { createdAt: 'desc' }, take: 10 });
+};
+
+export const getTagArticles = async (tags) => {
+  return db.article.findMany({
+    where: { tags: { some: { name: { in: tags } } } },
+  });
+};
+
+export const searchArticles = async (query: string) => {
+  return db.article.findMany({
+    where: {
+      OR: [
+        { title: { contains: query, mode: 'insensitive' } },
+        { text: { contains: query, mode: 'insensitive' } },
+      ],
+    },
+  });
 };
 
 export const deleteArticle = async (id) => {
