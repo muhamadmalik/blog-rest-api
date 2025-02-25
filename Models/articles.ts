@@ -2,14 +2,10 @@ import db from './db';
 import { Author } from '@prisma/client';
 
 export type Article = {
-  id: number;
   title: string;
   authorId: number;
-  author: Author;
   text: string;
   tags: Tag[];
-  comments: Comment[];
-  createdAt: Date;
 };
 
 export type Comment = {
@@ -43,11 +39,15 @@ export const getArticles = async () => {
 };
 
 export const getArticle = async (id) => {
-  return db.article.findUnique({ where: { id }, include: {comments: true} });
+  return db.article.findUnique({ where: { id }, include: { comments: true } });
 };
 
 export const getLatestArticles = async () => {
-  return db.article.findMany({ orderBy: { createdAt: 'desc' }, take: 10 });
+  return db.article.findMany({
+    orderBy: { createdAt: 'desc' },
+    take: 10,
+    include: { comments: true },
+  });
 };
 
 export const getTagArticles = async (tags) => {
