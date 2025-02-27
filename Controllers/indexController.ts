@@ -1,15 +1,23 @@
 import { Article } from '@prisma/client';
 import {
   createArticle,
+  createTag,
   getArticle,
   getArticles,
   getLatestArticles,
+  getTags,
 } from '../Models/articles';
 
 export const getIndexData = async (req, res) => {
   try {
     const articles = await getArticles();
     res.json(articles);
+    // await createTag({
+    //   name: 'JavaScript',
+    // });
+
+    const tags = getTags()
+    console.log(tags)
   } catch (error) {
     console.error('Error fetching articles:', error);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -50,7 +58,9 @@ export const addArticle = async (req, res) => {
     const { text, title, authorId, tags } = req.body;
 
     if (!text || !title || !authorId) {
-      return res.status(400).json({ error: 'Title, text, and authorId are required' });
+      return res
+        .status(400)
+        .json({ error: 'Title, text, and authorId are required' });
     }
 
     if (!Array.isArray(tags)) {
