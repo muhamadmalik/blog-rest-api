@@ -5,6 +5,7 @@ import {
   getArticle,
   getArticles,
   getLatestArticles,
+  getTagArticles,
   getTags,
 } from '../Models/articles';
 
@@ -12,12 +13,19 @@ export const getIndexData = async (req, res) => {
   try {
     const articles = await getArticles();
     res.json(articles);
+  } catch (error) {
+    console.error('Error fetching articles:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+export const getTaggedArticles = async (req, res) => {
+  try {
+    const tags = req.params.taqs;
+    const articles = await getTagArticles(tags);
+    res.json(articles);
     // await createTag({
     //   name: 'JavaScript',
     // });
-
-    const tags = getTags()
-    console.log(tags)
   } catch (error) {
     console.error('Error fetching articles:', error);
     res.status(500).json({ error: 'Internal Server Error' });

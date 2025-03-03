@@ -6,7 +6,8 @@ import passport from './authentication/passport';
 import authRouter from './Routes/authRoutes';
 import { getAuthors } from './Models/user';
 import cors from 'cors';
-import { createArticle, createTag, getArticle, getArticles, getTags, removeTag } from './Models/articles';
+import { createArticle, createTag, deleteArticles, getArticle, getArticles, getTagArticles, getTags, removesTags, removeTag } from './Models/articles';
+import { getTaggedArticles } from './Controllers/indexController';
 
 const app = express();
 app.use(passport.initialize());
@@ -22,8 +23,13 @@ app.set('json spaces', 2);
 app.listen(3002, '0.0.0.0', async (req, res) => {
   // await removeTag(4)
   // await createTag({name: 'Node.js'})
-  // await createArticle({title: 'this article is for javascript', text: 'this is javascript', authorId: 1, tags: [{id: 2,name: 'python'}, {id: 34, name:'Django'}]})
- console.log(await getArticles()) 
+  // await createArticle({title: 'this is for java', text: 'this is java', authorId: 1, tags: [{id: 2,name: 'java'}, {id: 34, name:'springboot'}]})
+//  const blah = await getArticles() 
+//  console.log(blah[6])
   // console.log(await getTags());
+  // console.log(await getTagArticles([ 'javascript']))
+  // deleteArticles()
+  // await removesTags()
+  
   console.log('Were listening at 3000');
 });

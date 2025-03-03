@@ -46,20 +46,24 @@ export const getArticles = async () => {
 };
 
 export const getArticle = async (id) => {
-  return db.article.findUnique({ where: { id }, include: { comments: true, tags: true } });
+  return db.article.findUnique({
+    where: { id },
+    include: { comments: true, tags: true },
+  });
 };
 
 export const getLatestArticles = async () => {
   return db.article.findMany({
     orderBy: { createdAt: 'desc' },
     take: 10,
-    include: { comments: true },
+    include: { comments: true, tags: true },
   });
 };
 
 export const getTagArticles = async (tags) => {
   return db.article.findMany({
     where: { tags: { some: { name: { in: tags } } } },
+    include: { comments: true },
   });
 };
 
@@ -76,6 +80,10 @@ export const searchArticles = async (query: string) => {
 
 export const deleteArticle = async (id) => {
   return db.article.delete({ where: { id } });
+};
+
+export const deleteArticles = async () => {
+  return db.article.deleteMany();
 };
 
 export const createComment = async (comment: Comment) => {
@@ -102,4 +110,8 @@ export const getTags = async () => {
 
 export const removeTag = async (id: number) => {
   return db.tag.delete({ where: { id } });
+};
+
+export const removesTags = async () => {
+  return db.tag.deleteMany();
 };
