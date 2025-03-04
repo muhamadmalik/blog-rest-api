@@ -1,3 +1,4 @@
+import { connect } from 'http2';
 import db from './db';
 import { Author } from '@prisma/client';
 
@@ -9,13 +10,9 @@ export type Article = {
 };
 
 export type Comment = {
-  id: number;
   text: string;
-  authorId: number;
-  author: Author;
-  postId: number;
-  post: Article;
-  createdAt: Date;
+  username: string;
+  articleId: number;
 };
 
 export type Tag = {
@@ -42,14 +39,22 @@ export const createArticle = async (post: Article) => {
 };
 
 export const getArticles = async () => {
-  return db.article.findMany({ include: { comments: true, tags: true } });
+  return db.article.findMany({ include: { tags: true , comments: true} });
 };
 
 export const getArticle = async (id) => {
   return db.article.findUnique({
     where: { id },
-    include: { comments: true, tags: true },
+    include: {
+      comments: true,
+      tags: true,
+      author: { select: { id: true, username: true } },
+    },
   });
+};
+
+export const findComments = async () => {
+  // return db.comment.delete({ where: { articleId}  } });
 };
 
 export const getLatestArticles = async () => {
@@ -86,20 +91,21 @@ export const deleteArticles = async () => {
   return db.article.deleteMany();
 };
 
-export const createComment = async (comment: Comment) => {
-  return db.comment.create({
-    data: {
-      text: comment.text,
-      authorId: comment.authorId,
-      articleId: comment.postId,
-    },
-  });
-};
-
 export const getComments = async () => {
   return db.comment.findMany();
 };
-
+export const removeComments = async () => {
+  return db.comment.deleteMany();
+};
+export const addComment = async (comment: Comment) => {
+  return db.comment.create({
+    data: {
+      text: comment.text,
+      username: comment.username,
+      article: { connect: { id: comment.articleId } },
+    },
+  });
+};
 export const createTag = async (tag: Tag) => {
   return db.tag.create({ data: { name: tag.name } });
 };

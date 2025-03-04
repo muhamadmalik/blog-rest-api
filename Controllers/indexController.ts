@@ -1,5 +1,6 @@
 import { Article } from '@prisma/client';
 import {
+  addComment,
   createArticle,
   createTag,
   getArticle,
@@ -81,6 +82,29 @@ export const addArticle = async (req, res) => {
     res.status(201).json({ message: 'Article created successfully', article });
   } catch (error) {
     console.error('Error creating article:', error);
+    res.status(500).json({ error: 'Internal Server Error' });
+  }
+};
+
+export const postComment = async (req, res) => {
+  const { text, username, articleId } = req.body;
+  const intArticleId = parseInt(articleId)
+  const comment = { text, username, articleId: intArticleId };
+  console.log(comment)
+
+  try {
+    if (!text || !username) {
+      return res
+        .status(400)
+        .json({ error: 'text, articleId and authorId are required' });
+    }
+    const newComment = await addComment(comment);
+
+    res
+      .status(201)
+      .json({ message: 'Comment added successsfully.', newComment });
+  } catch (error) {
+    console.error('Error adding comment:', error);
     res.status(500).json({ error: 'Internal Server Error' });
   }
 };
