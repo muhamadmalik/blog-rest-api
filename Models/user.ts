@@ -15,7 +15,7 @@ export const createAuthor = async (author: Author) => {
   });
 };
 
-export const getAuthor = async (username) => {
+export const getAuthor = async (username: string) => {
   return db.author.findUnique({
     where: { username },
   });

@@ -42,14 +42,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.removesTags = exports.removeTag = exports.getTags = exports.createTag = exports.addComment = exports.removeComments = exports.getComments = exports.deleteArticles = exports.deleteArticle = exports.searchArticles = exports.getTagArticles = exports.getLatestArticles = exports.findComments = exports.getArticle = exports.getArticles = exports.createArticle = void 0;
 var db_1 = __importDefault(require("./db"));
 var createArticle = function (post) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
+    var _a;
+    return __generator(this, function (_b) {
         return [2, db_1.default.article.create({
                 data: {
                     title: post.title,
                     text: post.text,
                     author: { connect: { id: post.authorId } },
                     tags: {
-                        connectOrCreate: post.tags.map(function (tag) { return ({
+                        connectOrCreate: ((_a = post.tags) !== null && _a !== void 0 ? _a : []).map(function (tag) { return ({
                             where: { id: tag.id },
                             create: { name: tag.name },
                         }); }),
@@ -95,8 +96,9 @@ var getLatestArticles = function () { return __awaiter(void 0, void 0, void 0, f
     });
 }); };
 exports.getLatestArticles = getLatestArticles;
-var getTagArticles = function (tags) { return __awaiter(void 0, void 0, void 0, function () {
-    return __generator(this, function (_a) {
+var getTagArticles = function (_a) { return __awaiter(void 0, [_a], void 0, function (_b) {
+    var tags = _b.tags;
+    return __generator(this, function (_c) {
         return [2, db_1.default.article.findMany({
                 where: { tags: { some: { name: { in: tags } } } },
                 include: { comments: true },

@@ -1,4 +1,4 @@
-import { Strategy as JwtStrategy, ExtractJwt } from 'passport-jwt';
+import { Strategy as JwtStrategy, ExtractJwt, StrategyOptions } from 'passport-jwt';
 import passport from 'passport';
 import dotenv from 'dotenv';
 import { getAuthor } from '../Models/user';
@@ -6,17 +6,21 @@ import jwt from 'jsonwebtoken';
 
 dotenv.config();
 
-const options = {
+const options: StrategyOptions = {
   jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
-  secretOrKey: process.env.JWT_SECRET,
+  secretOrKey: process.env.JWT_SECRET as string,
 };
 
-export const generateToken = (user) => {
-  return jwt.sign({ id: user.id }, process.env.JWT_SECRET, { expiresIn: '7d' });
+interface UserPayload {
+  id: string;
+}
+
+export const generateToken = (user: UserPayload): string => {
+  return jwt.sign({ id: user.id }, process.env.JWT_SECRET as string, { expiresIn: '7d' });
 };
 
 passport.use(
-  new JwtStrategy(options, async (payload, done) => {
+  new JwtStrategy(options, async (payload: UserPayload, done) => {
     try {
       const user = await getAuthor(payload.id);
       if (!user) {

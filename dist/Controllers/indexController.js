@@ -65,7 +65,7 @@ var getTaggedArticles = function (req, res) { return __awaiter(void 0, void 0, v
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                tags = req.params.taqs;
+                tags = { tags: req.params.tags.split(',') };
                 return [4, (0, articles_1.getTagArticles)(tags)];
             case 1:
                 articles = _a.sent();
@@ -108,7 +108,7 @@ var getArticleContorller = function (req, res) { return __awaiter(void 0, void 0
         switch (_a.label) {
             case 0:
                 _a.trys.push([0, 2, , 3]);
-                id = parseInt(req.params.id);
+                id = parseInt(req.params.id, 10);
                 if (isNaN(id)) {
                     return [2, res.status(400).json({ error: 'Invalid article ID' })];
                 }
@@ -138,9 +138,7 @@ var addArticle = function (req, res) { return __awaiter(void 0, void 0, void 0, 
                 _b.trys.push([0, 2, , 3]);
                 _a = req.body, text = _a.text, title = _a.title, authorId = _a.authorId, tags = _a.tags;
                 if (!text || !title || !authorId) {
-                    return [2, res
-                            .status(400)
-                            .json({ error: 'Title, text, and authorId are required' })];
+                    return [2, res.status(400).json({ error: 'Title, text, and authorId are required' })];
                 }
                 if (!Array.isArray(tags)) {
                     return [2, res.status(400).json({ error: 'Tags should be an array' })];
@@ -166,31 +164,25 @@ var postComment = function (req, res) { return __awaiter(void 0, void 0, void 0,
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
+                _b.trys.push([0, 2, , 3]);
                 _a = req.body, text = _a.text, username = _a.username, articleId = _a.articleId;
-                intArticleId = parseInt(articleId);
+                intArticleId = parseInt(articleId, 10);
+                if (!text || !username || isNaN(intArticleId)) {
+                    return [2, res.status(400).json({ error: 'text, username, and valid articleId are required' })];
+                }
                 comment = { text: text, username: username, articleId: intArticleId };
                 console.log(comment);
-                _b.label = 1;
-            case 1:
-                _b.trys.push([1, 3, , 4]);
-                if (!text || !username) {
-                    return [2, res
-                            .status(400)
-                            .json({ error: 'text, articleId and authorId are required' })];
-                }
                 return [4, (0, articles_1.addComment)(comment)];
-            case 2:
+            case 1:
                 newComment = _b.sent();
-                res
-                    .status(201)
-                    .json({ message: 'Comment added successsfully.', newComment: newComment });
-                return [3, 4];
-            case 3:
+                res.status(201).json({ message: 'Comment added successfully.', newComment: newComment });
+                return [3, 3];
+            case 2:
                 error_6 = _b.sent();
                 console.error('Error adding comment:', error_6);
                 res.status(500).json({ error: 'Internal Server Error' });
-                return [3, 4];
-            case 4: return [2];
+                return [3, 3];
+            case 3: return [2];
         }
     });
 }); };

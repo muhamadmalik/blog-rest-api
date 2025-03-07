@@ -6,7 +6,7 @@ export type Article = {
   title: string;
   authorId: number;
   text: string;
-  tags: Tag[];
+  tags?: Tag[];
 };
 
 export type Comment = {
@@ -28,7 +28,7 @@ export const createArticle = async (post: Article) => {
       text: post.text,
       author: { connect: { id: post.authorId } },
       tags: {
-        connectOrCreate: post.tags.map((tag: Tag) => ({
+        connectOrCreate: (post.tags ?? []).map((tag: Tag) => ({
           where: { id: tag.id },
           create: { name: tag.name },
         })),
@@ -42,7 +42,7 @@ export const getArticles = async () => {
   return db.article.findMany({ include: { tags: true , comments: true} });
 };
 
-export const getArticle = async (id) => {
+export const getArticle = async (id: number): Promise<Article | null> => {
   return db.article.findUnique({
     where: { id },
     include: {
@@ -65,7 +65,11 @@ export const getLatestArticles = async () => {
   });
 };
 
-export const getTagArticles = async (tags) => {
+export interface GetTagArticlesParams {
+  tags: string[];
+}
+
+export const getTagArticles = async ({ tags }: GetTagArticlesParams) => {
   return db.article.findMany({
     where: { tags: { some: { name: { in: tags } } } },
     include: { comments: true },
@@ -83,7 +87,7 @@ export const searchArticles = async (query: string) => {
   });
 };
 
-export const deleteArticle = async (id) => {
+export const deleteArticle = async (id: number): Promise<Article | null> => {
   return db.article.delete({ where: { id } });
 };
 

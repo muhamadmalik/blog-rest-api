@@ -1,4 +1,15 @@
 "use strict";
+var __assign = (this && this.__assign) || function () {
+    __assign = Object.assign || function(t) {
+        for (var s, i = 1, n = arguments.length; i < n; i++) {
+            s = arguments[i];
+            for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p))
+                t[p] = s[p];
+        }
+        return t;
+    };
+    return __assign.apply(this, arguments);
+};
 var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
     function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
     return new (P || (P = Promise))(function (resolve, reject) {
@@ -60,7 +71,7 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
                 return [4, (0, user_1.createAuthor)(newAuthor)];
             case 3:
                 author = _b.sent();
-                res.json({ token: (0, passport_1.generateToken)(author), user: author });
+                res.json({ token: (0, passport_1.generateToken)(__assign(__assign({}, author), { id: author.id.toString() })), user: author });
                 return [3, 5];
             case 4:
                 error_1 = _b.sent();
@@ -71,29 +82,38 @@ var register = function (req, res) { return __awaiter(void 0, void 0, void 0, fu
     });
 }); };
 exports.register = register;
-var login = function (req, res) { return __awaiter(void 0, void 0, void 0, function () {
-    var _a, username, password, author, match, error_2;
+var login = function (req, res, next) { return __awaiter(void 0, void 0, void 0, function () {
+    var _a, username, password, author, match, token, error_2;
     return __generator(this, function (_b) {
         switch (_b.label) {
             case 0:
                 _a = req.body, username = _a.username, password = _a.password;
                 _b.label = 1;
             case 1:
-                _b.trys.push([1, 3, , 4]);
+                _b.trys.push([1, 4, , 5]);
                 return [4, (0, user_1.getAuthor)(username)];
             case 2:
                 author = _b.sent();
-                match = bcrypt_1.default.compare(password, author === null || author === void 0 ? void 0 : author.password);
-                if (!author || !match) {
-                    return [2, res.status(401).json({ error: 'Invalid username or password' })];
+                if (!author || !author.password) {
+                    res.status(401).json({ error: 'Invalid username or password' });
+                    return [2];
                 }
-                res.json({ token: (0, passport_1.generateToken)(author), author: author });
-                return [3, 4];
+                return [4, bcrypt_1.default.compare(password, author.password)];
             case 3:
+                match = _b.sent();
+                if (!match) {
+                    res.status(401).json({ error: 'Invalid username or password' });
+                    return [2];
+                }
+                token = (0, passport_1.generateToken)({ id: author.id.toString() });
+                res.json({ token: token, author: author });
+                return [3, 5];
+            case 4:
                 error_2 = _b.sent();
+                console.error('Error logging in user:', error_2);
                 res.status(500).json({ error: 'Error logging in the user.' });
-                return [3, 4];
-            case 4: return [2];
+                return [3, 5];
+            case 5: return [2];
         }
     });
 }); };

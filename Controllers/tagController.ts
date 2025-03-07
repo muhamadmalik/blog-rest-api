@@ -1,6 +1,12 @@
 import { getTags } from '../Models/articles';
+import { Request, Response } from 'express';
 
-export const getTagsData = async (req, res) => {
-  const tags = await getTags();
+interface Tag {
+  id: number;
+  name: string;
+}
+
+export const getTagsData = async (req: Request, res: Response): Promise<void> => {
+  const tags: Tag[] = await getTags();
   res.json(tags);
 };
