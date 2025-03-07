@@ -15,6 +15,9 @@
     "prisma": "^6.3.1"
   },
   "scripts": {
-    "dev": "tsx watch app.ts"
+    "dev": "tsx watch app.ts",
+    "build": "tsc",
+    "start": "node dist/app.js"
   }
 }
+
